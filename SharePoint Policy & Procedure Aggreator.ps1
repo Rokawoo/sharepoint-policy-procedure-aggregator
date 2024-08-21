@@ -204,10 +204,25 @@ function Get-DepartmentFromUrl {
     }
 }
 
+function Get-FileLastModifiedDate {
+    param (
+        [string]$FileUrl
+    )
+
+    try {
+        $fileItem = Get-PnPFile -Url $FileUrl -AsListItem
+        $lastModifiedDate = $fileItem["Modified"]
+        return $lastModifiedDate
+    } catch {
+        Write-Error "Failed to retrieve file last modified date: $_"
+        return $null
+    }
+}
+
 # Main Execution
 try {
     Connect-ToSharePoint
-    
+
     $ListLastModifiedDate = (Get-PnPList -Identity $ListName).LastItemUserModifiedDate
     Write-Yellow "Policies & Procedures List Last Aggregated: $($ListLastModifiedDate)"
     
