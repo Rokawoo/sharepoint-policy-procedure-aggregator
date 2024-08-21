@@ -251,6 +251,8 @@ try {
                 Write-Warning "Skipping document with unknown department: $docTitle"
             }
         }
+
+        Write-Host "---"
     }
 }
 finally {
