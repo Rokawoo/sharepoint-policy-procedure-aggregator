@@ -212,6 +212,10 @@ function Get-DepartmentFromUrl {
 }
 
 function Format-Authors {
+    <#
+    .SYNOPSIS
+        Formats the Author string by removing emails and spacing Authors properly.
+    #>
     param (
         [string]$AuthorString
     )
