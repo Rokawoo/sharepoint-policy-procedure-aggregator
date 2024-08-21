@@ -121,7 +121,7 @@ function Update-Or-AddItem {
         [string]$DocumentType,
         [string]$Department,
         [string]$LastModified,
-        [string]$Author
+        [string]$DocumentAuthor
     )
 
     try {
@@ -145,7 +145,7 @@ function Update-Or-AddItem {
                 DocumentType = $DocumentType
                 Department = $Department
                 LastModified = $LastModified
-                Author = $Author
+                DocumentAuthor = $DocumentAuthor
             }
         } else {
             Write-Yellow "Adding new item: $Title"
@@ -155,7 +155,7 @@ function Update-Or-AddItem {
                 DocumentType = $DocumentType
                 Department = $Department
                 LastModified = $LastModified
-                Author = $Author
+                DocumentAuthor = $DocumentAuthor
             }
         }
     } catch {
@@ -232,7 +232,7 @@ try {
         if ($docUrl -match "\.pdf$") {
             $department = Get-DepartmentFromUrl -Url $docUrl
             if ($department -ne "Unknown") {
-                Update-Or-AddItem -Title $docTitle -DocumentLink $docUrl -DocumentType $docType -Department $department -LastModified $docLastModified -Author $docAuthor
+                Update-Or-AddItem -Title $docTitle -DocumentLink $docUrl -DocumentType $docType -Department $department -LastModified $docLastModified -DocumentAuthor $docAuthor
             } else {
                 Write-Warning "Skipping document with unknown department: $docTitle"
             }
