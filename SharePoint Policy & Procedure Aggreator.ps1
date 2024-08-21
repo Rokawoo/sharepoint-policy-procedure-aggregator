@@ -11,7 +11,7 @@
     5. Disconnects from SharePoint Online.
 
 .PARAMETER SiteUrl
-    The URL of the SharePoint Online site where the list is located. Default is "https://rhoadsindustries.sharepoint.com/sites/Policy".
+    The URL of the SharePoint Online site where the list is located. Default is "https://example.sharepoint.com/sites/Policy".
 
 .PARAMETER ListName
     The name of the SharePoint list to be managed. Default is "Policies and Procedures by Department".
@@ -27,18 +27,18 @@
     This example connects to the specified SharePoint Online site, clears the "Department Policies" list, searches for relevant documents, updates or adds them to the list, and removes items older than 60 days.
 
 .Link
-    https://github.com/Rokawoo/rhoads-sharepoint-policy-procedure-aggregator
+    https://github.com/Rokawoo/sharepoint-policy-procedure-aggregator
 
 .ONETIME-SETUP
     1. Run SharePoint Online Management Shell Installer: https://www.microsoft.com/en-US/download/details.aspx?id=35588&msockid=1873099af97a68ec13ce1d1ff8186956
     2. Run in PowerShell: Install-Module -Name SharePointPnPPowerShellOnline -Force -AllowClobber; $env:PNPLEGACYMESSAGE='false'
 
 .AUTHOR
-    Augustus Sroka
+    Roka Awoo
 #>
 
 param (
-    [string]$SiteUrl = "https://rhoadsindustries.sharepoint.com/sites/Policy",
+    [string]$SiteUrl = "https://example.sharepoint.com/sites/Policy",
     [string]$ListName = "Policies & Procedures by Department"
 )
 
