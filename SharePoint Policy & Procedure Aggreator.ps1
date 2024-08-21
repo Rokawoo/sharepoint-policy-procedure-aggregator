@@ -121,7 +121,7 @@ function Update-Or-AddItem {
         [string]$DocumentType,
         [string]$Department,
         [string]$LastModified,
-        [string]$Author
+        [string]$DocumentAuthor
     )
 
     try {
@@ -145,7 +145,7 @@ function Update-Or-AddItem {
                 DocumentType = $DocumentType
                 Department = $Department
                 LastModified = $LastModified
-                Author = $Author
+                DocumentAuthor = $DocumentAuthor
             }
         } else {
             Write-Yellow "Adding new item: $Title"
@@ -155,7 +155,7 @@ function Update-Or-AddItem {
                 DocumentType = $DocumentType
                 Department = $Department
                 LastModified = $LastModified
-                Author = $Author
+                DocumentAuthor = $DocumentAuthor
             }
         }
     } catch {
@@ -184,6 +184,7 @@ function Get-DocumentType {
     }
 }
 
+
 function Get-DepartmentFromUrl {
     <#
     .SYNOPSIS
@@ -210,6 +211,20 @@ function Get-DepartmentFromUrl {
     }
 }
 
+function Format-Authors {
+    param (
+        [string]$AuthorString
+    )
+    $emailPattern = '^[\w\.-]+@[\w\.-]+\.\w+$'
+
+    $formattedAuthors = ($AuthorString -split ';' |
+        Where-Object { $_ -notmatch $emailPattern } |
+        ForEach-Object { $_.Trim() } |
+        Where-Object { $_ -ne '' }) -join "; "
+
+    return $formattedAuthors
+}
+
 # Main Execution
 try {
     Connect-ToSharePoint
@@ -223,18 +238,21 @@ try {
 
     foreach ($result in $results) {
         $docTitle = $result.Title
-        $docUrl = $result.Path
-        $lastFileModifiedDate = $result.LastModifiedTime
         $docType = Get-DocumentType -docTitle $docTitle
+        $docUrl = $result.Path
+        $docLastModified = $result.LastModifiedTime
+        $docAuthor = Format-Authors -AuthorString $result.Author
 
         if ($docUrl -match "\.pdf$") {
             $department = Get-DepartmentFromUrl -Url $docUrl
             if ($department -ne "Unknown") {
-                Update-Or-AddItem -Title $docTitle -DocumentLink $docUrl -DocumentType $docType -Department $department -LastModified $lastFileModifiedDate
+                Update-Or-AddItem -Title $docTitle -DocumentLink $docUrl -DocumentType $docType -Department $department -LastModified $docLastModified -DocumentAuthor $docAuthor
             } else {
                 Write-Warning "Skipping document with unknown department: $docTitle"
             }
         }
+
+        Write-Host "---"
     }
 }
 finally {
