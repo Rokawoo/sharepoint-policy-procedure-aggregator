@@ -222,6 +222,8 @@ try {
         $docTitle = $result.Title
         $docUrl = $result.Path
         $docLastModified = $result.LastModifiedTime
+        $docAuthor = $result.Author
+        Write-Yellow("This guy > $($docAuthor)")
         $docType = Get-DocumentType -docTitle $docTitle
 
         if ($docUrl -match "\.pdf$") {
