@@ -255,9 +255,9 @@ try {
             } else {
                 Write-Warning "Skipping document with unknown department: $docTitle"
             }
-        }
 
-        Write-Host "---"
+            Write-Host "---"
+        }
     }
 }
 finally {
