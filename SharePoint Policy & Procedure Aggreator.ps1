@@ -119,8 +119,7 @@ function Update-Or-AddItem {
         [string]$Title,
         [string]$DocumentLink,
         [string]$DocumentType,
-        [string]$Department,
-        [datetime]$LastModified
+        [string]$Department
     )
 
     try {
@@ -208,7 +207,10 @@ function Get-DepartmentFromUrl {
 # Main Execution
 try {
     Connect-ToSharePoint
-
+    
+    $ListLastModifiedDate = (Get-PnPList -Identity $ListName).LastItemUserModifiedDate
+    Write-Yellow "Policies & Procedures List Last Aggregated: $($ListLastModifiedDate)"
+    
     Clear-List
 
     $results = Search-Documents
