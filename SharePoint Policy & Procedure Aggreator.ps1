@@ -120,7 +120,8 @@ function Update-Or-AddItem {
         [string]$DocumentLink,
         [string]$DocumentType,
         [string]$Department,
-        [datetime]$LastModified
+        [string]$LastModified,
+        [string]$Author
     )
 
     try {
@@ -143,6 +144,8 @@ function Update-Or-AddItem {
                 DocumentLink = $DocumentLink
                 DocumentType = $DocumentType
                 Department = $Department
+                LastModified = $LastModified
+                Author = $Author
             }
         } else {
             Write-Yellow "Adding new item: $Title"
@@ -151,6 +154,8 @@ function Update-Or-AddItem {
                 DocumentLink = $DocumentLink
                 DocumentType = $DocumentType
                 Department = $Department
+                LastModified = $LastModified
+                Author = $Author
             }
         }
     } catch {
@@ -209,6 +214,9 @@ function Get-DepartmentFromUrl {
 try {
     Connect-ToSharePoint
 
+    $ListLastModifiedDate = (Get-PnPList -Identity $ListName).LastItemUserModifiedDate
+    Write-Yellow "Policies & Procedures List Last Aggregated: $($ListLastModifiedDate)"
+    
     Clear-List
 
     $results = Search-Documents
@@ -216,12 +224,13 @@ try {
     foreach ($result in $results) {
         $docTitle = $result.Title
         $docUrl = $result.Path
+        $lastFileModifiedDate = $result.LastModifiedTime
         $docType = Get-DocumentType -docTitle $docTitle
 
         if ($docUrl -match "\.pdf$") {
             $department = Get-DepartmentFromUrl -Url $docUrl
             if ($department -ne "Unknown") {
-                Update-Or-AddItem -Title $docTitle -DocumentLink $docUrl -DocumentType $docType -Department $department
+                Update-Or-AddItem -Title $docTitle -DocumentLink $docUrl -DocumentType $docType -Department $department -LastModified $lastFileModifiedDate
             } else {
                 Write-Warning "Skipping document with unknown department: $docTitle"
             }
