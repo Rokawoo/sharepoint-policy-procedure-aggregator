@@ -210,9 +210,11 @@ function Get-FileLastModifiedDate {
     )
 
     try {
-        $fileItem = Get-PnPFile -Url $FileUrl -AsListItem
-        $lastModifiedDate = $fileItem["Modified"]
-        return $lastModifiedDate
+        $fileItem = Get-PnPFile -Url $FileUrl -AsFile
+
+        $fileItemProperties = Get-PnPProperty -ClientObject $fileItem -Property "TimeLastModified"
+
+        return $fileItemProperties
     } catch {
         Write-Error "Failed to retrieve file last modified date: $_"
         return $null
