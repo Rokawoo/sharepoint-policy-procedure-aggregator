@@ -184,6 +184,7 @@ function Get-DocumentType {
     }
 }
 
+
 function Get-DepartmentFromUrl {
     <#
     .SYNOPSIS
@@ -210,6 +211,20 @@ function Get-DepartmentFromUrl {
     }
 }
 
+function Format-Authors {
+    param (
+        [string]$AuthorString
+    )
+    $emailPattern = '^[\w\.-]+@[\w\.-]+\.\w+$'
+
+    $formattedAuthors = ($AuthorString -split ';' |
+        Where-Object { $_ -notmatch $emailPattern } |
+        ForEach-Object { $_.Trim() } |
+        Where-Object { $_ -ne '' }) -join "`n"
+
+    return $formattedAuthors
+}
+
 # Main Execution
 try {
     Connect-ToSharePoint
@@ -223,11 +238,10 @@ try {
 
     foreach ($result in $results) {
         $docTitle = $result.Title
+        $docType = Get-DocumentType -docTitle $docTitle
         $docUrl = $result.Path
         $docLastModified = $result.LastModifiedTime
-        $docAuthor = $result.Author
-        Write-Yellow("This guy > $($docAuthor)")
-        $docType = Get-DocumentType -docTitle $docTitle
+        $docAuthor = Format-Authors -AuthorString $result.Author
 
         if ($docUrl -match "\.pdf$") {
             $department = Get-DepartmentFromUrl -Url $docUrl
