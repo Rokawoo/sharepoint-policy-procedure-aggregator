@@ -224,13 +224,13 @@ try {
     foreach ($result in $results) {
         $docTitle = $result.Title
         $docUrl = $result.Path
-        $lastFileModifiedDate = $result.LastModifiedTime
+        $docLastModified = $result.LastModifiedTime
         $docType = Get-DocumentType -docTitle $docTitle
 
         if ($docUrl -match "\.pdf$") {
             $department = Get-DepartmentFromUrl -Url $docUrl
             if ($department -ne "Unknown") {
-                Update-Or-AddItem -Title $docTitle -DocumentLink $docUrl -DocumentType $docType -Department $department -LastModified $lastFileModifiedDate
+                Update-Or-AddItem -Title $docTitle -DocumentLink $docUrl -DocumentType $docType -Department $department -LastModified $docLastModified
             } else {
                 Write-Warning "Skipping document with unknown department: $docTitle"
             }
