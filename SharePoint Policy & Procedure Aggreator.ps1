@@ -26,12 +26,15 @@
 
     This example connects to the specified SharePoint Online site, clears the "Department Policies" list, searches for relevant documents, updates or adds them to the list, and removes items older than 60 days.
 
+.Link
+    https://github.com/Rokawoo/rhoads-sharepoint-policy-procedure-aggregator
+
 .ONETIME-SETUP
     1. Run SharePoint Online Management Shell Installer: https://www.microsoft.com/en-US/download/details.aspx?id=35588&msockid=1873099af97a68ec13ce1d1ff8186956
     2. Run in Terminal: Install-Module -Name SharePointPnPPowerShellOnline -Force -AllowClobber
 
 .AUTHOR
-    Augustus Sroka (rokaawoo@gmail.com)
+    Augustus Sroka
 #>
 
 param (
