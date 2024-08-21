@@ -220,7 +220,7 @@ function Format-Authors {
     $formattedAuthors = ($AuthorString -split ';' |
         Where-Object { $_ -notmatch $emailPattern } |
         ForEach-Object { $_.Trim() } |
-        Where-Object { $_ -ne '' }) -join "`n"
+        Where-Object { $_ -ne '' }) -join "; "
 
     return $formattedAuthors
 }
