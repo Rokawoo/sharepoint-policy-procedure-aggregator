@@ -119,7 +119,9 @@ function Update-Or-AddItem {
         [string]$Title,
         [string]$DocumentLink,
         [string]$DocumentType,
-        [string]$Department
+        [string]$Department,
+        [string]$LastModified,
+        [string]$Author
     )
 
     try {
@@ -142,6 +144,8 @@ function Update-Or-AddItem {
                 DocumentLink = $DocumentLink
                 DocumentType = $DocumentType
                 Department = $Department
+                LastModified = $LastModified
+                Author = $Author
             }
         } else {
             Write-Yellow "Adding new item: $Title"
@@ -150,6 +154,8 @@ function Update-Or-AddItem {
                 DocumentLink = $DocumentLink
                 DocumentType = $DocumentType
                 Department = $Department
+                LastModified = $LastModified
+                Author = $Author
             }
         }
     } catch {
@@ -204,23 +210,6 @@ function Get-DepartmentFromUrl {
     }
 }
 
-function Get-FileLastModifiedDate {
-    param (
-        [string]$FileUrl
-    )
-
-    try {
-        $fileItem = Get-PnPFile -Url $FileUrl -AsFile
-
-        $fileItemProperties = Get-PnPProperty -ClientObject $fileItem -Property "TimeLastModified"
-
-        return $fileItemProperties
-    } catch {
-        Write-Error "Failed to retrieve file last modified date: $_"
-        return $null
-    }
-}
-
 # Main Execution
 try {
     Connect-ToSharePoint
@@ -235,12 +224,13 @@ try {
     foreach ($result in $results) {
         $docTitle = $result.Title
         $docUrl = $result.Path
+        $lastFileModifiedDate = $result.LastModifiedTime
         $docType = Get-DocumentType -docTitle $docTitle
 
         if ($docUrl -match "\.pdf$") {
             $department = Get-DepartmentFromUrl -Url $docUrl
             if ($department -ne "Unknown") {
-                Update-Or-AddItem -Title $docTitle -DocumentLink $docUrl -DocumentType $docType -Department $department
+                Update-Or-AddItem -Title $docTitle -DocumentLink $docUrl -DocumentType $docType -Department $department -LastModified $lastFileModifiedDate
             } else {
                 Write-Warning "Skipping document with unknown department: $docTitle"
             }
