@@ -185,7 +185,6 @@ function Get-DocumentType {
     }
 }
 
-
 function Get-DepartmentFromUrl {
     <#
     .SYNOPSIS
