@@ -119,7 +119,7 @@ function Update-Or-AddItem {
     param (
         [string]$Title,
         [string]$DocumentLink,
-        [string]$DocumentType,
+        [string]$DocumentCategory,
         [string]$Department,
         [string]$LastModified,
         [string]$DocumentAuthor
@@ -143,7 +143,7 @@ function Update-Or-AddItem {
             Write-Yellow "Updating existing item: $Title"
             Set-PnPListItem -List $ListName -Identity $existingItem.Id -Values @{
                 DocumentLink = $DocumentLink
-                DocumentType = $DocumentType
+                Category = $DocumentCategory
                 Department = $Department
                 LastModified = $LastModified
                 DocumentAuthor = $DocumentAuthor
@@ -153,7 +153,7 @@ function Update-Or-AddItem {
             Add-PnPListItem -List $ListName -Values @{
                 Title = $Title
                 DocumentLink = $DocumentLink
-                DocumentType = $DocumentType
+                Category = $DocumentCategory
                 Department = $Department
                 LastModified = $LastModified
                 DocumentAuthor = $DocumentAuthor
@@ -165,10 +165,10 @@ function Update-Or-AddItem {
     }
 }
 
-function Get-DocumentType {
+function Get-DocumentCategory {
     <#
     .SYNOPSIS
-        Extracts the document type from a given document title.
+        Extracts the document category from a given document string attribute.
     #>
     param (
         [string]$docTitle
@@ -242,7 +242,7 @@ try {
 
     foreach ($result in $results) {
         $docTitle = $result.Title
-        $docType = Get-DocumentType -docTitle $docTitle
+        $docCategory = Get-DocumentCategory -docTitle $docTitle
         $docUrl = $result.Path
         $docLastModified = $result.LastModifiedTime
         $docAuthor = Format-Authors -AuthorString $result.Author
@@ -250,7 +250,7 @@ try {
         if ($docUrl -match "\.pdf$") {
             $department = Get-DepartmentFromUrl -Url $docUrl
             if ($department -ne "Unknown") {
-                Update-Or-AddItem -Title $docTitle -DocumentLink $docUrl -DocumentType $docType -Department $department -LastModified $docLastModified -DocumentAuthor $docAuthor
+                Update-Or-AddItem -Title $docTitle -DocumentLink $docUrl -DocumentCategory $docCategory -Department $department -LastModified $docLastModified -DocumentAuthor $docAuthor
             } else {
                 Write-Warning "Skipping document with unknown department: $docTitle"
             }
