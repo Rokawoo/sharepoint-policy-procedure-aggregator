@@ -31,8 +31,8 @@
      - Give your list a name and create it.
 
 - **Fields to Add**:
-  - **`Document Type`** (Single Line Text): A text field to specify the type of document (e.g., Policy, Procedure).
-    - **Field Type**: Single Line Text
+  - **`Category`** (Single Line Text): A text field to specify the category of document (e.g., Policy, Procedure).
+    - **Field Type**: Choice
 
   - **`Title`** (Single Line Text): The title or name of the document.
     - **Field Type**: Single Line Text
