@@ -193,6 +193,44 @@ function Get-DocumentCategory {
     }
 }
 
+function AddSpaceBetweenCase {
+    <#
+    .SYNOPSIS
+        Adds a space between (lowercase and uppercase) chars and between (uppercase and uppercase) if the following char is (lowercase).
+    #>
+    param (
+        [string]$inputString
+    )
+
+    if (-not $inputString) {
+        return $inputString
+    }
+
+    $stringBuilder = [System.Text.StringBuilder]::new()
+    $length = $inputString.Length
+
+    for ($i = 0; $i -lt $length; $i++) {
+        $currentChar = $inputString[$i]
+        $stringBuilder.Append($currentChar) | Out-Null
+
+        if ($i -lt $length - 1) {
+            $nextChar = $inputString[$i + 1]
+
+            if ([char]::IsLower($currentChar) -and [char]::IsUpper($nextChar)) {
+                $stringBuilder.Append(" ") | Out-Null
+            }
+            elseif ($i -lt $length - 2) {
+                $nextNextChar = $inputString[$i + 2]
+                if ([char]::IsUpper($currentChar) -and [char]::IsUpper($nextChar) -and [char]::IsLower($nextNextChar)) {
+                    $stringBuilder.Append(" ") | Out-Null
+                }
+            }
+        }
+    }
+
+    return $stringBuilder.ToString()
+}
+
 function Get-DepartmentFromUrl {
     <#
     .SYNOPSIS
@@ -205,13 +243,17 @@ function Get-DepartmentFromUrl {
     try {
         Write-Host "Processing URL: $Url"
 
-        if ($Url -match "/sites/") {
+        if (Check-UrlConditions -Url $Url) {
             $departmentPart = ($Url -split '/sites/')[1] -split '/' | Select-Object -First 1
-            Write-Host "Extracted Department: $departmentPart"
-            return $departmentPart
+
+            $formattedDepartment = AddSpaceBetweenCase -inputString $departmentPart
+
+
+            Write-Host "Formatted Department: $formattedDepartment"
+            return $formattedDepartment
         }
 
-        Write-Warning "URL does not contain '/sites/'. Returning 'Unknown'."
+        Write-Warning "URL does not meet conditions. Returning 'Unknown'."
         return "Unknown"
     } catch {
         Write-Error "Failed to extract department from URL: $_"
