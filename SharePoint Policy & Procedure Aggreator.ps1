@@ -94,16 +94,24 @@ function Clear-List {
 function Search-Documents {
     <#
     .SYNOPSIS
-        Searches for documents in the SharePoint Online site using the provided query.
+        Searches for all policy and procedure documents in SharePoint Online sites based on title or category.
+
     #>
     param (
-        [string]$Query = "Title:Policy OR Title:Procedure AND FileExtension:pdf"
+        [string]$Query = 'contentclass:STS_ListItem_DocumentLibrary AND (Title:Policy OR Title:Procedure OR Category:"Policies & Procedures") AND FileExtension:pdf'
     )
 
     try {
-        Write-Yellow "Searching for documents..."
-        $results = Submit-PnPSearchQuery -Query $Query
-        Write-Yellow "Search completed."
+        Write-Host "Initiating search across all document libraries in the domain..." -ForegroundColor Yellow
+
+        $results = Submit-PnPSearchQuery -Query $Query -TrimDuplicates $true -All 
+
+        if ($results.ResultRows.Count -eq 0) {
+            Write-Yellow "No documents found matching the criteria."
+        } else {
+            Write-Host "$($results.ResultRows.Count) documents found." -ForegroundColor Green
+        }
+
         return $results.ResultRows
     } catch {
         Write-Error "Search query failed: $_"
