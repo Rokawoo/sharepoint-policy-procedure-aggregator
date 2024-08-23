@@ -119,6 +119,18 @@ function Search-Documents {
     }
 }
 
+function Convert-UrlsToRtfLinks {
+    <#
+    .SYNOPSIS
+        Converts a URL into an HTML anchor tag for rich text formatting.
+    #>
+    param (
+        [string]$richTextContent
+    )
+
+    return "<a href='$richTextContent' target='_blank'>Document Link</a>"
+}
+
 function Update-Or-AddItem {
     <#
     .SYNOPSIS
@@ -150,7 +162,7 @@ function Update-Or-AddItem {
         if ($existingItem) {
             Write-Yellow "Updating existing item: $Title"
             Set-PnPListItem -List $ListName -Identity $existingItem.Id -Values @{
-                DocumentLink = $DocumentLink
+                DocumentLink = Convert-UrlsToRtfLinks -richTextContent $DocumentLink
                 Category = $DocumentCategory
                 Department = $Department
                 LastModified = $LastModified
@@ -160,7 +172,7 @@ function Update-Or-AddItem {
             Write-Yellow "Adding new item: $Title"
             Add-PnPListItem -List $ListName -Values @{
                 Title = $Title
-                DocumentLink = $DocumentLink
+                DocumentLink = Convert-UrlsToRtfLinks -richTextContent $DocumentLink
                 Category = $DocumentCategory
                 Department = $Department
                 LastModified = $LastModified
