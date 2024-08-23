@@ -31,20 +31,67 @@
      - Give your list a name and create it.
 
 - **Fields to Add**:
-  - **`Category`** (Single Line Text): A text field to specify the category of document (e.g., Policy, Procedure).
-    - **Field Type**: Choice
 
-  - **`Title`** (Single Line Text): The title or name of the document.
+  - **`Category`** (Single Line Text): A text field to specify the category of document (e.g., Policy, Procedure).
+
     - **Field Type**: Single Line Text
 
+  - **`Title`** (Single Line Text): The title or name of the document.
+
+    - **Field Type**: Single Line Text
+
+    - **Format Json**: 
+    ```json
+    {
+      "$schema": "https://developer.microsoft.com/json-schemas/sp/v2/column-formatting.schema.json",
+      "elmType": "a",
+      "attributes": {
+        "href": "[$DocumentLink]",
+        "target": "_blank"
+      },
+      "style": {
+        "color": "black",
+        "text-decoration": "underline",
+        "font-size": "14px",
+        "font-weight": "600"
+      },
+      "txtContent": "@currentField"
+    }
+    ```
+
   - **`Department`** (Single Line Text): A text field to indicate the department associated with the document.
+
     - **Field Type**: Single Line Text
 
   - **`Last Modified`** (Date Time): A date and time field to record when the document was last modified.
+
     - **Field Type**: Date Time
 
   - **`Document Author`** (Single Line Text): A text field for the name of the document's author.
+
     - **Field Type**: Single Line Text
+
+  - **`Document Link`** (Single Line Text): A text field for the name of the document's author.
+
+    - **Field Type**: Multiple Line Text
+
+    - **Format Json**: 
+    ```json
+    {
+      "$schema": "https://developer.microsoft.com/json-schemas/sp/column-formatting.schema.json",
+      "elmType": "a",
+      "attributes": {
+        "href": "=if(@currentField, @currentField, '#')",
+        "target": "_blank"
+      },
+      "style": {
+        "text-decoration": "none",
+        "color": "=if(@currentField, '#0078d4', 'red')",
+        "font-weight": "=if(@currentField, 'normal', 'bold')"
+      },
+      "txtContent": "=if(@currentField, 'Link', 'URL Error')"
+    }
+    ```
 
 ## Example Usage
 ```ps
