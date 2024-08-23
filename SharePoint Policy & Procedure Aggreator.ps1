@@ -280,6 +280,8 @@ try {
     }
 }
 finally {
+    $listItemCount = (Get-PnPList -Identity $ListName).ItemCount
+    Write-Yellow "Total Documents in List: $listItemCount"
     Disconnect-PnPOnline
     Write-Yellow "Disconnected from SharePoint Online."
 }
