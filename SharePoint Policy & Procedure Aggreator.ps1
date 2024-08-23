@@ -193,6 +193,28 @@ function Get-DocumentCategory {
     }
 }
 
+function Check-UrlConditions {
+    <#
+    .SYNOPSIS
+        Checks if the provided URL meets specified conditions.
+    #>
+    param (
+        [string]$Url
+    )
+
+    if ($Url -match "/sites/" -and $Url -match "/Shared Documents/" -and $Url -notmatch "(?i)archive") {
+        $slashCount = ($Url -split '/').Count - 1
+
+        if ($slashCount -le 7) {
+            return $true
+        } else {
+            return $false
+        }
+    } else {
+        return $false
+    }
+}
+
 function AddSpaceBetweenCase {
     <#
     .SYNOPSIS
