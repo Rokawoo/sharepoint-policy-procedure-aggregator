@@ -22,7 +22,7 @@
     - Ensure that the PnP PowerShell module is installed and updated.
 
 .EXAMPLE
-    .\ManageSharePointList.ps1 -SiteUrl "https://example.sharepoint.com/sites/Policy" -ListName "Policies List"
+    .\SharePoint Policy & Procedure Aggregator (LEGACY).ps1 -SiteUrl "https://example.sharepoint.com/sites/Policy" -ListName "Policies List"
 
     This example connects to the specified SharePoint Online site, clears the "Department Policies" list, searches for relevant documents, updates or adds them to the list, and removes items older than 60 days.
 
