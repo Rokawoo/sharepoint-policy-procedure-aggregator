@@ -94,7 +94,7 @@
     }
     ```
 
-- **Formatting View**:
+- **Formatting List View**:
   - Group the list by **`Department`**
   - Sort the list alphabetically by **`Title`**
   - **Format Json**:
