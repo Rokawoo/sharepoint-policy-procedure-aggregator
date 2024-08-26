@@ -305,8 +305,8 @@ function Format-Authors {
 try {
     Connect-ToSharePoint
 
-    $ListLastModifiedDate = (Get-PnPList -Identity $ListName).LastItemUserModifiedDate
-    Write-Yellow "Policies & Procedures List Last Aggregated: $($ListLastModifiedDate)"
+    $listLastModifiedDate = (Get-PnPList -Identity $ListName).LastItemUserModifiedDate
+    Write-Yellow "Policies & Procedures List Last Aggregated: $($listLastModifiedDate)"
     
     Clear-List
 
