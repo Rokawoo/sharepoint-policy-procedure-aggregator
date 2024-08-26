@@ -98,7 +98,7 @@ function Search-Documents {
 
     #>
     param (
-        [string]$Query = 'contentclass:STS_ListItem_DocumentLibrary AND (Title:Policy OR Title:Procedure OR Category:"Policies & Procedures") AND FileExtension:pdf'
+        [string]$Query = 'contentclass:STS_ListItem_DocumentLibrary AND (Title:*Policy* OR Title:*Procedure* OR Category:"Policies & Procedures") AND (FileExtension:pdf OR FileExtension:doc OR FileExtension:docx)'
     )
 
     try {
