@@ -319,7 +319,7 @@ try {
         $docLastModified = $result.LastModifiedTime
         $docAuthor = Format-Authors -AuthorString $result.Author
 
-        if ($docUrl -match "\.pdf$") {
+        if ($docUrl -match "\.(doc|docx|pdf)$") {
             $department = Get-DepartmentFromUrl -Url $docUrl
             if ($department -ne "Unknown") {
                 Update-Or-AddItem -Title $docTitle -DocumentLink $docUrl -DocumentCategory $docCategory -Department $department -LastModified $docLastModified -DocumentAuthor $docAuthor
