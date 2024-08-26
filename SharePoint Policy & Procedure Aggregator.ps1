@@ -43,8 +43,6 @@ param (
     [string]$ListName = "Policies List"
 )
 
-$global:SharePointList = $null
-
 function Write-Yellow {
     <#
     .SYNOPSIS
@@ -67,19 +65,6 @@ function Connect-ToSharePoint {
         Write-Yellow "Connected to SharePoint Online."
     } catch {
         Write-Error "Failed to connect to SharePoint: $_"
-        throw
-    }
-}
-
-function Initialize-List {
-    <#
-    .SYNOPSIS
-        Stores the SharePoint list in a global variable.
-    #>
-    try {
-        $global:SharePointList = Get-PnPList -Identity $ListName
-    } catch {
-        Write-Error "Failed to get SharePoint list: $_"
         throw
     }
 }
@@ -304,9 +289,8 @@ function Format-Authors {
 # Main Execution
 try {
     Connect-ToSharePoint
-    Initialize-List
 
-    Write-Yellow "Policies & Procedures List Last Aggregated: $($global:SharePointList.LastItemUserModifiedDate)"
+    Write-Yellow "Policies & Procedures List Last Aggregated: $((Get-PnPList -Identity $ListName).LastItemUserModifiedDate)"
     $searchResults = Search-Documents
 
     foreach ($result in $searchResults) {
@@ -331,7 +315,7 @@ try {
     Remove-ObsoleteItems -CurrentItems $searchResults
 }
 finally {
-    Write-Yellow "Total Documents in List: $($global:SharePointList.ItemCount)"
+    Write-Yellow "Total Documents in List: $((Get-PnPList -Identity $ListName).ItemCount)"
     Disconnect-PnPOnline
     Write-Yellow "Disconnected from SharePoint Online."
 }
