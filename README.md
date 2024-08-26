@@ -24,8 +24,9 @@
 ### 3. **Set Up a SharePoint List**
 
 - **Instructions**:
+
   1. **Go to Your SharePoint Site**: Navigate to your SharePoint Online site where you want to create the list.
-  2. **Create a New List**: 
+  2. **Create a New List**:
      - Click on **Site Contents**.
      - Select **New** and then **List**.
      - Give your list a name and create it.
@@ -93,7 +94,58 @@
     }
     ```
 
+- **Formatting View**:
+  - Group the list by **`Department`**
+  - Sort the list alphabetically by **`Title`**
+  - **Format Json**:
+  ```json
+  {
+    "$schema": "https://developer.microsoft.com/json-schemas/sp/v2/row-formatting.schema.json",
+    "groupProps": {
+      "headerFormatter": {
+        "elmType": "div",
+        "style": {
+          "display": "flex",
+          "align-items": "center",
+          "width": "48vw",
+          "height": "3vh",
+          "padding": "8px 10px",
+          "background-color": "#DEDEDE",
+          "color": "#000000",
+          "border": "1px solid #ABABAB",
+          "border-radius": "5px"
+        },
+        "children": [
+          {
+            "elmType": "span",
+            "txtContent": "=@group.fieldData",
+            "style": {
+              "font-weight": "550",
+              "font-size": "16px"
+            }
+          },
+          {
+            "elmType": "span",
+            "txtContent": "='(' + @group.count + ')'",
+            "style": {
+              "margin-left": "5px",
+              "font-weight": "550",
+              "font-size": "16px"
+            }
+          }
+        ]
+      }
+    }
+  }
+
 ## Example Usage
+
+**Note:** The script defaults to the Rhoads SharePoint Domain and the "Polices & Procedures by Department" List.
+```ps
+.\SharePoint Policy & Procedure Aggreator.ps1
+```
+
+**With Custom Parameters:**
 ```ps
 .\SharePoint Policy & Procedure Aggreator.ps1 -SiteUrl "https://example.sharepoint.com/sites/Policy" -ListName "Policies List"
 ```
