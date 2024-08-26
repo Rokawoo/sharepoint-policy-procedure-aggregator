@@ -207,6 +207,7 @@ function Check-UrlConditions {
     }
 }
 
+$formattedResultCache = @{}
 function AddSpaceBetweenCase {
     <#
     .SYNOPSIS
@@ -216,8 +217,8 @@ function AddSpaceBetweenCase {
         [string]$inputString
     )
 
-    if (-not $inputString) {
-        return $inputString
+    if ($formattedResultCache.ContainsKey($inputString)) {
+        return $formattedResultCache[$inputString]
     }
 
     $stringBuilder = [System.Text.StringBuilder]::new()
@@ -241,7 +242,10 @@ function AddSpaceBetweenCase {
         }
     }
 
-    return $stringBuilder.ToString()
+    $result = $stringBuilder.ToString()
+    $formattedResultCache[$inputString] = $result
+
+    return $result
 }
 
 function Get-DepartmentFromUrl {
