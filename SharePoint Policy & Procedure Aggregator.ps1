@@ -96,7 +96,7 @@ function Search-Documents {
 
     try {
         Write-Host "Initiating search across all document libraries in the domain..." -ForegroundColor Yellow
-        $results = Submit-PnPSearchQuery -Query $Query -TrimDuplicates $true -SelectProperties Title,Name,Category -All 
+        $results = Submit-PnPSearchQuery -Query $Query -TrimDuplicates $true -SelectProperties Title,Name,Category -All -RetryCount 1
 
         if ($results.ResultRows.Count -eq 0) {
             Write-Yellow "No documents found matching the criteria."
