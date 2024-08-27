@@ -138,7 +138,7 @@
     }
   }
 
-###4. **Set Up the Valid Departments List*
+### 4. **Set Up the Valid Departments List**
   - Add the department site names exactly as they appear in the URLs to Valid Departments.txt, which is located in the same directory as the .\SharePoint Policy & Procedure Aggregator.ps1 script. These entries will be used to populate the SharePoint lists.
 
 ## Example Usage
