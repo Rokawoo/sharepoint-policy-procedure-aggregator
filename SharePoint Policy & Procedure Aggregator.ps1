@@ -43,6 +43,9 @@ param (
     [string]$ListName = "Policies List"
 )
 
+$DepartmentsHashSet = [System.Collections.Generic.HashSet[string]]::new()
+$DepartmentsHashSet.Add("/ExampleSiteUrlName/")
+
 function Write-Yellow {
     <#
     .SYNOPSIS
@@ -82,7 +85,7 @@ function Search-Documents {
 
     try {
         Write-Host "Initiating search across all document libraries in the domain..." -ForegroundColor Yellow
-        $results = Submit-PnPSearchQuery -Query $Query -TrimDuplicates $true -SelectProperties Title,Name,Category -All
+        $results = Submit-PnPSearchQuery -Query $Query -TrimDuplicates $true -SelectProperties Title, Name, Category -All
 
         if ($results.ResultRows.Count -eq 0) {
             Write-Yellow "No documents found matching the criteria."
@@ -161,20 +164,26 @@ function Remove-ObsoleteItems {
         Removes items from a SharePoint list that are no longer present in the current list of items.
     #>
     param (
-        [array]$CurrentItems
+        [System.Collections.Generic.HashSet[string]]$CurrentItems
     )
 
     try {
         Write-Yellow "Removing obsolete items from the list..."
-        $itemsToDelete = Get-PnPListItem -List $ListName | Where-Object { $_.FieldValues.Title -notin $currentTitles }
+        $allItems = Get-PnPListItem -List $ListName
 
-        foreach ($item in $itemsToDelete) {
-            Write-Yellow "Deleting obsolete item: $($item.FieldValues.Title)"
-            Remove-PnPListItem -List $ListName -Identity $item.Id -Force
+        $itemsToDelete = $allItems | Where-Object { -not $CurrentItems.Contains($_.FieldValues.Title) }
+
+        if ($itemsToDelete.Count -eq 0) {
+            Write-Yellow "No obsolete items found."
+        } else {
+            foreach ($item in $itemsToDelete) {
+                Write-Yellow "Deleting obsolete item: $($item.FieldValues.Title)"
+                Remove-PnPListItem -List $ListName -Identity $item.Id -Force
+            }
+            Write-Yellow "Obsolete items removed."
         }
-
-        Write-Yellow "Obsolete items removed."
-    } catch {
+    }
+    catch {
         Write-Error "Failed to remove obsolete items: $_"
         throw
     }
@@ -206,12 +215,20 @@ function Check-UrlConditions {
         Checks if the provided URL meets specified conditions.
     #>
     param (
-        [string]$Url
+        [string]$Url,
+        [System.Collections.Generic.HashSet[string]]$DepartmentsHashSet
     )
 
     if ($Url -match "/sites/" -and $Url -match "/Shared Documents/" -and $Url -notmatch "(?i)archive") {
-        $slashCount = ($Url -split '/').Count - 1
-        return $slashCount -le 6
+        $containsDepartment = $DepartmentsHashSet | Where-Object { $Url -match $_ }
+
+        if ($containsDepartment) {
+            $slashCount = ($Url -split '/').Count - 1
+            return $slashCount -le 6
+        }
+        else {
+            return $false
+        }
     }
     else {
         return $false
@@ -272,7 +289,7 @@ function Get-DepartmentFromUrl {
     try {
         Write-Host "Processing URL: $Url"
 
-        if (Check-UrlConditions -Url $Url) {
+        if (Check-UrlConditions -Url $Url -DepartmentsHashSet $DepartmentsHashSet) {
             $departmentPart = ($Url -split '/sites/')[1] -split '/' | Select-Object -First 1
             $formattedDepartment = AddSpaceBetweenCase -inputString $departmentPart
 
@@ -290,6 +307,10 @@ function Get-DepartmentFromUrl {
 }
 
 function Format-Authors {
+    <#
+    .SYNOPSIS
+        Formats the Author string by removing emails and spacing Authors properly.
+    #>
     param (
         [string]$AuthorString
     )
@@ -311,6 +332,7 @@ try {
     $searchResults = Search-Documents
 
     $successfulDocs = [System.Collections.Generic.HashSet[string]]::new()
+    
     foreach ($result in $searchResults) {
         $docTitle = $result.Title
         $docCategory = Get-DocumentCategory -docTitle $docTitle
@@ -322,6 +344,7 @@ try {
             $department = Get-DepartmentFromUrl -Url $docUrl
             if ($department -ne "Invalid") {
                 Update-Or-AddItem -Title $docTitle -DocumentLink $docUrl -DocumentCategory $docCategory -Department $department -LastModified $docLastModified -DocumentAuthor $docAuthor
+                $successfulDocs.Add($docTitle) | Out-Null   
             }
             else {
                 Write-Warning "Skipping document with invalid department: $docTitle"
@@ -331,11 +354,10 @@ try {
         }
     }
 
-    Remove-ObsoleteItems -CurrentItems $searchResults
+    Remove-ObsoleteItems -CurrentItems $successfulDocs
 }
 finally {
     Write-Yellow "Total Documents in List: $((Get-PnPList -Identity $ListName).ItemCount)"
     Disconnect-PnPOnline
     Write-Yellow "Disconnected from SharePoint Online."
 }
-
