@@ -75,8 +75,8 @@ function Search-Documents {
         Searches for documents in SharePoint Online that match the criteria for policy and procedure documents.
     #>
     param (
-        [string]$Query = 'contentclass:STS_ListItem_DocumentLibrary AND (Title:*Policy* OR Title:*Procedure* OR Category:"Policies & Procedures")
-         AND (FileExtension:pdf OR FileExtension:doc OR FileExtension:docx)'
+        [string]$Query = 'contentclass:STS_ListItem_DocumentLibrary AND 
+        (Title:*Policy* OR Title:*Procedure* OR Category:"Policies & Procedures") AND (FileExtension:pdf)'
     )
 
     try {
