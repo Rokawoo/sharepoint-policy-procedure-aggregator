@@ -161,14 +161,12 @@ function Remove-ObsoleteItems {
         Removes items from a SharePoint list that are no longer present in the current list of items.
     #>
     param (
-        [System.Collections.Generic.HashSet[string]]$CurrentTitles
+        [array]$CurrentItems
     )
 
     try {
         Write-Yellow "Removing obsolete items from the list..."
-        
-        # Get all items from the SharePoint list
-        $itemsToDelete = Get-PnPListItem -List $ListName | Where-Object { -not $CurrentTitles.Contains($_.FieldValues.Title) }
+        $itemsToDelete = Get-PnPListItem -List $ListName | Where-Object { $_.FieldValues.Title -notin $currentTitles }
 
         foreach ($item in $itemsToDelete) {
             Write-Yellow "Deleting obsolete item: $($item.FieldValues.Title)"
@@ -176,8 +174,7 @@ function Remove-ObsoleteItems {
         }
 
         Write-Yellow "Obsolete items removed."
-    }
-    catch {
+    } catch {
         Write-Error "Failed to remove obsolete items: $_"
         throw
     }
@@ -325,7 +322,6 @@ try {
             $department = Get-DepartmentFromUrl -Url $docUrl
             if ($department -ne "Invalid") {
                 Update-Or-AddItem -Title $docTitle -DocumentLink $docUrl -DocumentCategory $docCategory -Department $department -LastModified $docLastModified -DocumentAuthor $docAuthor
-                $successfulDocs.Add($docTitle)
             }
             else {
                 Write-Warning "Skipping document with invalid department: $docTitle"
@@ -335,10 +331,11 @@ try {
         }
     }
 
-    Remove-ObsoleteItems -CurrentItems $successfulDocs
+    Remove-ObsoleteItems -CurrentItems $searchResults
 }
 finally {
     Write-Yellow "Total Documents in List: $((Get-PnPList -Identity $ListName).ItemCount)"
     Disconnect-PnPOnline
     Write-Yellow "Disconnected from SharePoint Online."
 }
+
