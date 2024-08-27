@@ -201,7 +201,7 @@ function Check-UrlConditions {
 
     if ($Url -match "/sites/" -and $Url -match "/Shared Documents/" -and $Url -notmatch "(?i)archive") {
         $slashCount = ($Url -split '/').Count - 1
-        return $slashCount -le 7
+        return $slashCount -le 6
     } else {
         return $false
     }
