@@ -156,13 +156,14 @@ function Remove-ObsoleteItems {
         Removes items from a SharePoint list that are no longer present in the current list of items.
     #>
     param (
-        [array]$CurrentItems
+        [System.Collections.Generic.HashSet[string]]$CurrentTitles
     )
 
     try {
         Write-Yellow "Removing obsolete items from the list..."
-        $currentTitles = $CurrentItems.Title
-        $itemsToDelete = Get-PnPListItem -List $ListName | Where-Object { $_.FieldValues.Title -notin $currentTitles }
+        
+        # Get all items from the SharePoint list
+        $itemsToDelete = Get-PnPListItem -List $ListName | Where-Object { -not $CurrentTitles.Contains($_.FieldValues.Title) }
 
         foreach ($item in $itemsToDelete) {
             Write-Yellow "Deleting obsolete item: $($item.FieldValues.Title)"
@@ -170,7 +171,8 @@ function Remove-ObsoleteItems {
         }
 
         Write-Yellow "Obsolete items removed."
-    } catch {
+    }
+    catch {
         Write-Error "Failed to remove obsolete items: $_"
         throw
     }
@@ -187,9 +189,11 @@ function Get-DocumentCategory {
 
     if ($docTitle -match "policy" -and $docTitle -match "procedure") {
         return "Policy & Procedure"
-    } elseif ($docTitle -match "policy") {
+    }
+    elseif ($docTitle -match "policy") {
         return "Policy"
-    } else {
+    }
+    else {
         return "Procedure"
     }
 }
@@ -202,7 +206,8 @@ function Check-UrlConditions {
     if ($Url -match "/sites/" -and $Url -match "/Shared Documents/" -and $Url -notmatch "(?i)archive") {
         $slashCount = ($Url -split '/').Count - 1
         return $slashCount -le 6
-    } else {
+    }
+    else {
         return $false
     }
 }
@@ -233,7 +238,8 @@ function AddSpaceBetweenCase {
 
             if ([char]::IsLower($currentChar) -and [char]::IsUpper($nextChar)) {
                 $stringBuilder.Append(" ") | Out-Null
-            } elseif ($i -lt $length - 2) {
+            }
+            elseif ($i -lt $length - 2) {
                 $nextNextChar = $inputString[$i + 2]
                 if ([char]::IsUpper($currentChar) -and [char]::IsUpper($nextChar) -and [char]::IsLower($nextNextChar)) {
                     $stringBuilder.Append(" ") | Out-Null
@@ -268,11 +274,12 @@ function Get-DepartmentFromUrl {
             return $formattedDepartment
         }
 
-        Write-Warning "URL does not meet conditions. Returning 'Unknown'."
-        return "Unknown"
-    } catch {
+        Write-Warning "URL does not meet conditions. Returning 'Invalid'."
+        return "Invalid"
+    }
+    catch {
         Write-Error "Failed to extract department from URL: $_"
-        return "Unknown"
+        return "Invalid"
     }
 }
 
@@ -297,6 +304,7 @@ try {
     Write-Yellow "Policies & Procedures List Last Aggregated: $((Get-PnPList -Identity $ListName).LastItemUserModifiedDate)"
     $searchResults = Search-Documents
 
+    $successfulDocs = [System.Collections.Generic.HashSet[string]]::new()
     foreach ($result in $searchResults) {
         $docTitle = $result.Title
         $docCategory = Get-DocumentCategory -docTitle $docTitle
@@ -306,20 +314,23 @@ try {
 
         if ($docUrl -match "\.(doc|docx|pdf)$") {
             $department = Get-DepartmentFromUrl -Url $docUrl
-            if ($department -ne "Unknown") {
+            if ($department -ne "Invalid") {
                 Update-Or-AddItem -Title $docTitle -DocumentLink $docUrl -DocumentCategory $docCategory -Department $department -LastModified $docLastModified -DocumentAuthor $docAuthor
-            } else {
-                Write-Warning "Skipping document with unknown department: $docTitle"
+                $successfulDocs.Add($docTitle) | Out-Null
+            }
+            else {
+                Write-Warning "Skipping document with invalid department: $docTitle"
             }
 
             Write-Host "---"
         }
     }
 
-    Remove-ObsoleteItems -CurrentItems $searchResults
+    Remove-ObsoleteItems -CurrentItems $successfulDocs
 }
 finally {
     Write-Yellow "Total Documents in List: $((Get-PnPList -Identity $ListName).ItemCount)"
     Disconnect-PnPOnline
     Write-Yellow "Disconnected from SharePoint Online."
 }
+
