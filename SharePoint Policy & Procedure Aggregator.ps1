@@ -32,6 +32,7 @@
 .ONETIME-SETUP
     1. Run SharePoint Online Management Shell Installer: https://www.microsoft.com/en-US/download/details.aspx?id=35588&msockid=1873099af97a68ec13ce1d1ff8186956
     2. Run in PowerShell: Install-Module -Name SharePointPnPPowerShellOnline -Force -AllowClobber; $env:PNPLEGACYMESSAGE='false'
+    3. Add the department site names exactly as they appear in the URL to 'Valid Departments.txt'—these will be used to populate the SharePoint lists.
 
 .AUTHOR
     Roka Awoo
