@@ -1,0 +1,8 @@
+ExampleDepartment
+IT
+Security
+Finance
+Quality
+Compliance
+Safety
+HumanResources
