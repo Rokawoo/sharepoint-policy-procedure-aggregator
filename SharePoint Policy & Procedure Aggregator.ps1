@@ -199,6 +199,10 @@ function Get-DocumentCategory {
 }
 
 function Check-UrlConditions {
+    <#
+    .SYNOPSIS
+        Checks if the provided URL meets specified conditions.
+    #>
     param (
         [string]$Url
     )
