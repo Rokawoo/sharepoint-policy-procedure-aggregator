@@ -43,8 +43,42 @@ param (
     [string]$ListName = "Policies List"
 )
 
-$DepartmentsHashSet = [System.Collections.Generic.HashSet[string]]::new()
-$DepartmentsHashSet.Add("/ExampleSiteUrlName/")
+function Initialize-DepartmentsHashSet {
+    <#
+    .SYNOPSIS
+    Creates a HashSet from the lines of a .txt file named 'Valid Departments.txt' located in the same directory as the script.
+    Each line is enclosed in '/' on both sides before being added to the HashSet.
+    #>
+    try {
+        if (-not $PSScriptRoot) {
+            throw "Could not determine the script directory."
+        }
+
+        $filePath = Join-Path -Path $PSScriptRoot -ChildPath "Valid Departments.txt"
+
+        if (-not $filePath) {
+            throw "Could not construct the file path."
+        }
+
+        $DepartmentsHashSet = [System.Collections.Generic.HashSet[string]]::new()
+
+        if (Test-Path -Path $filePath) {
+            Get-Content -Path $filePath | ForEach-Object {
+                $enclosedValue = "/" + $_.Trim() + "/"
+                $DepartmentsHashSet.Add($enclosedValue) | Out-Null
+            }
+        } else {
+            throw "The file $filePath does not exist."
+        }
+
+        return $DepartmentsHashSet
+    } catch {
+        Write-Error "An error occurred: $_"
+        exit 1
+    }
+}
+
+$DepartmentsHashSet = Initialize-DepartmentsHashSet
 
 function Write-Yellow {
     <#
