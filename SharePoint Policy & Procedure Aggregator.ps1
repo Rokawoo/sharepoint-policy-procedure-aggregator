@@ -63,7 +63,8 @@ function Connect-ToSharePoint {
         Write-Yellow "Connecting to SharePoint Online..."
         Connect-PnPOnline -Url $SiteUrl -UseWebLogin
         Write-Yellow "Connected to SharePoint Online."
-    } catch {
+    }
+    catch {
         Write-Error "Failed to connect to SharePoint: $_"
         throw
     }
@@ -75,7 +76,7 @@ function Search-Documents {
         Searches for documents in SharePoint Online that match the criteria for policy and procedure documents.
     #>
     param (
-        [string]$Query = 'contentclass:STS_ListItem_DocumentLibrary AND 
+        [string]$Query = 'contentclass:STS_ListItem_DocumentLibrary AND
         (Title:*Policy* OR Title:*Procedure* OR Category:"Policies & Procedures") AND (FileExtension:pdf)'
     )
 
@@ -85,12 +86,14 @@ function Search-Documents {
 
         if ($results.ResultRows.Count -eq 0) {
             Write-Yellow "No documents found matching the criteria."
-        } else {
+        }
+        else {
             Write-Host "$($results.ResultRows.Count) documents found." -ForegroundColor Green
         }
 
         return $results.ResultRows
-    } catch {
+    }
+    catch {
         Write-Error "Search query failed: $_"
         throw
     }
@@ -127,24 +130,26 @@ function Update-Or-AddItem {
         if ($existingItem) {
             Write-Yellow "Updating existing item: $Title"
             Set-PnPListItem -List $ListName -Identity $existingItem.Id -Values @{
-                DocumentLink = $DocumentLink
-                Category = $DocumentCategory
-                Department = $Department
-                LastModified = $LastModified
-                DocumentAuthor = $DocumentAuthor
-            }
-        } else {
-            Write-Yellow "Adding new item: $Title"
-            Add-PnPListItem -List $ListName -Values @{
-                Title = $Title
-                DocumentLink = $DocumentLink
-                Category = $DocumentCategory
-                Department = $Department
-                LastModified = $LastModified
+                DocumentLink   = $DocumentLink
+                Category       = $DocumentCategory
+                Department     = $Department
+                LastModified   = $LastModified
                 DocumentAuthor = $DocumentAuthor
             }
         }
-    } catch {
+        else {
+            Write-Yellow "Adding new item: $Title"
+            Add-PnPListItem -List $ListName -Values @{
+                Title          = $Title
+                DocumentLink   = $DocumentLink
+                Category       = $DocumentCategory
+                Department     = $Department
+                LastModified   = $LastModified
+                DocumentAuthor = $DocumentAuthor
+            }
+        }
+    }
+    catch {
         Write-Error "Failed to update or add item: $_"
         throw
     }
@@ -320,7 +325,7 @@ try {
             $department = Get-DepartmentFromUrl -Url $docUrl
             if ($department -ne "Invalid") {
                 Update-Or-AddItem -Title $docTitle -DocumentLink $docUrl -DocumentCategory $docCategory -Department $department -LastModified $docLastModified -DocumentAuthor $docAuthor
-                $successfulDocs.Add($docTitle) | Out-Null
+                $successfulDocs.Add($docTitle)
             }
             else {
                 Write-Warning "Skipping document with invalid department: $docTitle"
@@ -337,4 +342,3 @@ finally {
     Disconnect-PnPOnline
     Write-Yellow "Disconnected from SharePoint Online."
 }
-
