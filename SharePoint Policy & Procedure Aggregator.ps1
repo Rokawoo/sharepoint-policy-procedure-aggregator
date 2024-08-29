@@ -78,7 +78,6 @@ function Initialize-DepartmentsHashSet {
         exit 1
     }
 }
-
 $DepartmentsHashSet = Initialize-DepartmentsHashSet
 
 function Write-Yellow {
@@ -137,6 +136,7 @@ function Search-Documents {
     }
 }
 
+$dateFormat = "MM/dd/yyyy HH:mm:ss"
 function Update-Or-AddItem {
     <#
     .SYNOPSIS
@@ -166,13 +166,20 @@ function Update-Or-AddItem {
 "@
 
         if ($existingItem) {
-            Write-Yellow "Updating existing item: $Title"
-            Set-PnPListItem -List $ListName -Identity $existingItem.Id -Values @{
-                DocumentLink   = $DocumentLink
-                Category       = $DocumentCategory
-                Department     = $Department
-                LastModified   = $LastModified
-                DocumentAuthor = $DocumentAuthor
+            $newModifiedDate = [DateTime]::ParseExact($LastModified, $dateFormat, $null)
+            $existingModifiedDate = [DateTime]::ParseExact($existingItem.FieldValues["LastModified"], $dateFormat, $null)
+
+            if ($newModifiedDate -gt $existingModifiedDate) {
+                Write-Yellow "Updating existing item: $Title"
+                Set-PnPListItem -List $ListName -Identity $existingItem.Id -Values @{
+                    DocumentLink   = $DocumentLink
+                    Category       = $DocumentCategory
+                    Department     = $Department
+                    LastModified   = $LastModified
+                    DocumentAuthor = $DocumentAuthor
+                }
+            } else {
+                Write-Yellow "Existing item is already up-to-date: $Title"
             }
         }
         else {
