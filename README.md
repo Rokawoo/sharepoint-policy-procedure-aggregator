@@ -1,6 +1,6 @@
 <div align="center">
   <img src="https://github.com/user-attachments/assets/63b26005-7a51-4b5f-a142-00d56397cfa4" alt="Aggregator" align="center" width="235px"/>
-  <h1>SharePoint Policy & Procedure Aggreator</h1>
+  <h1>SharePoint Policy & Procedure Aggregator</h1>
   <p>By Rokawoo</p>
 </div>
 
