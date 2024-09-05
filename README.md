@@ -139,8 +139,28 @@
   }
 
 ### 4. **Set Up the Valid Departments List**
-  - Add the department site names exactly as they appear in the URLs to Valid Departments.txt, which is located in the same directory as the .\SharePoint Policy & Procedure Aggregator.ps1 script. These entries will be used to populate the SharePoint lists.
+> [!Note]
+> The sites from which the `.\SharePoint Policy & Procedure Aggregator.ps1` script will pull documents must be configured.
 
+1. **Locate the File**:
+   - Find the file named `Valid Departments.txt`. This file should be located in the same directory as your PowerShell script, `.\SharePoint Policy & Procedure Aggregator.ps1`.
+
+2. **Enter Department Site Names**:
+   - In the `Valid Departments.txt` file, list each department's site name exactly as it appears in the SharePoint URLs. Each department name should be on its own line. Ensure there are no extra spaces or incorrect characters.
+   
+   For example, if your SharePoint URLs are like:
+   - `https://example.sharepoint.com/sites/HumanResources`
+   - `https://example.sharepoint.com/sites/Finance`
+
+   Then, you should enter:
+   ```
+   HumanResources
+   Finance
+   ```
+
+3. **Save the File**:
+- After entering all the department names, save the `Valid Departments.txt` file.
+---
 ## Example Usage
 
 **Note:** The script defaults to the Rhoads SharePoint Domain and the "Polices & Procedures by Department" List.
@@ -152,3 +172,5 @@
 ```ps
 .\SharePoint Policy & Procedure Aggreator.ps1 -SiteUrl "https://example.sharepoint.com/sites/Policy" -ListName "Policies List"
 ```
+---
+
