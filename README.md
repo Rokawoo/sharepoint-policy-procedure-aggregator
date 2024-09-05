@@ -173,4 +173,49 @@
 .\SharePoint Policy & Procedure Aggreator.ps1 -SiteUrl "https://example.sharepoint.com/sites/Policy" -ListName "Policies List"
 ```
 ---
+## Task Scheduler Setup
 
+## Opening Task Scheduler
+
+1. **Open the Run Dialog**:
+   - Press `Win + R` on your keyboard to open the Run dialog.
+
+2. **Launch Task Scheduler**:
+   - Type `taskschd.msc` and press `Enter` or click **OK**. This will open Task Scheduler.
+
+## Creating a New Task
+
+1. **Open Task Scheduler Library**:
+   - In the Task Scheduler window, navigate to **Task Scheduler Library** on the left sidebar.
+
+2. **Create a New Task**:
+   - Click on **"Create Task"** in the right-hand Actions pane. (Do not select "Create Basic Task".)
+
+3. **Configure General Settings**:
+   - **Name**: `SharePoint Policy & Procedure Aggregator`
+   - **Description**: `Aggregates Policy & Procedure PDF Documents to Sharepoint Site`
+   - **Security Options**: Choose **"Run only when the user is logged on"** to ensure the task runs interactively. If you need the task to run with elevated privileges, check **"Run with highest privileges"**.
+   - **Configure for**: Select the appropriate operating system version from the drop-down menu.
+
+4. **Set Triggers**:
+   - Go to the **"Triggers"** tab.
+   - Click **"New"** to create a new trigger.
+   - Define when you want the task to start (e.g., on a schedule, etc.).
+   - Click **OK** to save the trigger.
+
+5. **Define Actions**:
+   - Go to the **"Actions"** tab.
+   - Click **"New"** to define a new action.
+   - **Action**: Select **"Start a program"**.
+   - **Program/script**: Enter the path to the program you want to run (e.g., `Powershell.exe`).
+   - **Add arguments**: Enter any arguments needed (e.g., `-ExecutionPolicy Bypass -File "C:\Path\To\Your\Script.ps1"`).
+   - Click **OK** to save the action.
+
+7. **Save the Task**:
+   - Click **OK** to save and exit the task creation window.
+   - You may be prompted to enter your user credentials if you selected **"Run only when the user is logged on"**.
+
+8. **Test the Task**:
+   - To ensure everything is configured correctly, right-click the task in Task Scheduler and select **"Run"** to test it.
+
+The SharePoint Policy & Procedure Aggregator task is now created and configured. You can monitor its execution and make adjustments as needed.
