@@ -255,6 +255,12 @@ function Check-UrlConditions {
     <#
     .SYNOPSIS
         Checks if the provided URL meets specified conditions.
+    .DESCRIPTION
+        URL conditons as follows:
+        1. The URL must contain "/sites/" and "/Shared Documents/".
+        2. The URL must not contain any variation of the word "archive" (case-insensitive).
+        3. The URL must contain a valid department name from the provided department hash set.
+        4. The total number of path segments (denoted by slashes) in the URL must be less than or equal to 6.
     #>
     param (
         [string]$Url,
