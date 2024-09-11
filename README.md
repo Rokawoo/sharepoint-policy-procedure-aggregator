@@ -193,9 +193,9 @@
 
 3. **Configure General Settings**:
    - **Name**: `SharePoint Policy & Procedure Aggregator`
-   - **Description**: `Aggregates Policy & Procedure PDF Documents to Sharepoint Site`
+   - **Description**: `Aggregates Policy & Procedure PDF Documents to SharePoint Site`
    - **Security Options**: Select **"Run only when the user is logged on"** to make sure the task runs interactively, which is required for connecting to the SharePoint site using `-UseWeblogin`.
-     - If you're using the EntraID app version of the script, you can optionally choose **"Run whether user is logged on or not"**.
+     - If you're using the **EntraID** app version of the script, you can optionally choose **"Run whether user is logged on or not"**.
      - If you need the task to run with elevated privileges, check **"Run with highest privileges"**.
    - **Configure for**: Select the appropriate operating system version from the drop-down menu.
 
