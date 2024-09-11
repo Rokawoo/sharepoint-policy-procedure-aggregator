@@ -47,8 +47,8 @@ param (
 function Initialize-DepartmentsHashSet {
     <#
     .SYNOPSIS
-    Creates a HashSet from the lines of a .txt file named 'Valid Departments.txt' located in the same directory as the script.
-    Each line is enclosed in '/' on both sides before being added to the HashSet.
+        Creates a HashSet from the lines of a .txt file named 'Valid Departments.txt' located in the same directory as the script.
+        Each line is enclosed in '/' on both sides before being added to the HashSet.
     #>
     try {
         if (-not $PSScriptRoot) {
