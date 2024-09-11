@@ -1,0 +1,3 @@
+ClientId=examplex-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+Tenant=example.onmicrosoft.com
+PfxFileName=Example PFX File.pfx
