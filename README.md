@@ -194,7 +194,9 @@
 3. **Configure General Settings**:
    - **Name**: `SharePoint Policy & Procedure Aggregator`
    - **Description**: `Aggregates Policy & Procedure PDF Documents to Sharepoint Site`
-   - **Security Options**: Choose **"Run only when the user is logged on"** to ensure the task runs interactively. If you need the task to run with elevated privileges, check **"Run with highest privileges"**.
+   - **Security Options**: Select **"Run only when the user is logged on"** to make sure the task runs interactively, which is required for connecting to the SharePoint site using `-UseWeblogin`.
+     - If you're using the EntraID app version of the script, you can optionally choose **"Run whether user is logged on or not"**.
+     - If you need the task to run with elevated privileges, check **"Run with highest privileges"**.
    - **Configure for**: Select the appropriate operating system version from the drop-down menu.
 
 4. **Set Triggers**:
@@ -207,8 +209,8 @@
    - Go to the **"Actions"** tab.
    - Click **"New"** to define a new action.
    - **Action**: Select **"Start a program"**.
-   - **Program/script**: Enter the path to the program you want to run (e.g., `Powershell.exe`).
-   - **Add arguments**: Enter any arguments needed (e.g., `-ExecutionPolicy Bypass -File "C:\Path\To\Your\Script.ps1"`).
+   - **Program/script**: Enter the path for the program to run (e.g., `Powershell.exe`).
+   - **Add arguments**: Enter the arguments needed (e.g., `-ExecutionPolicy Bypass -File "C:\Path\To\Your\Script.ps1"`).
    - Click **OK** to save the action.
 
 7. **Save the Task**:
