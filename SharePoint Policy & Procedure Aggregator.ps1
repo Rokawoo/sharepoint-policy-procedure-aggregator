@@ -61,7 +61,7 @@ function Initialize-DepartmentsHashSet {
             throw "Could not construct the file path."
         }
 
-        $DepartmentsHashSet = [System.Collections.Generic.HashSet[string]]::new()
+        $DepartmentsHashSet = New-Object 'System.Collections.Generic.HashSet[string]'
 
         if (Test-Path -Path $filePath) {
             Get-Content -Path $filePath | ForEach-Object {
@@ -297,7 +297,7 @@ function AddSpaceBetweenCase {
         return $formattedResultCache[$inputString]
     }
 
-    $stringBuilder = [System.Text.StringBuilder]::new()
+    $stringBuilder = New-Object 'System.Text.StringBuilder'
     $length = $inputString.Length
 
     for ($i = 0; $i -lt $length; $i++) {
@@ -379,7 +379,7 @@ try {
     Write-Yellow "Policies & Procedures List Last Aggregated: $((Get-PnPList -Identity $ListName).LastItemUserModifiedDate)"
     $searchResults = Search-Documents
 
-    $successfulDocs = [System.Collections.Generic.HashSet[string]]::new()
+    $successfulDocs = New-Object 'System.Collections.Generic.HashSet[string]'
     
     foreach ($result in $searchResults) {
         $docTitle = $result.Title
